@@ -100,9 +100,9 @@ public class MyPhotosTest {
 
 		//Expected Files
 		HashSet<String> expectedPhotos = new HashSet<String>();
-		expectedPhotos.add(dir1+"/IMG_1108.jpg");
-		expectedPhotos.add(dir1+"/IMG_2017.jpg");
-		expectedPhotos.add(dir2+"/IMG_2017.jpg");
+		expectedPhotos.add(dir1+"/IMAG0071.jpg");
+		expectedPhotos.add(dir1+"/IMG_1558.jpg");
+		expectedPhotos.add(dir2+"/IMG_0131.JPG");
 
 		
 		MyPhotos myPhotos = context.getBean(MyPhotos.class);
