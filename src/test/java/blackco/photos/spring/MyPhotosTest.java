@@ -96,7 +96,7 @@ public class MyPhotosTest {
 		String dir1 = home+photoDir1;
 		String dir2 = home+photoDir2;
 
-		String cacheLocation = "/Users/blackco/Temp/myPhotosCacheMyPhotosTest.json";
+		String cacheLocation = home+"/src/test/test-fixtures/myPhotosCacheMyPhotosTest.json";
 
 		//Expected Files
 		HashSet<String> expectedPhotos = new HashSet<String>();
