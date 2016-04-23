@@ -3,7 +3,6 @@ package blackco.photos.apps;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 
@@ -11,6 +10,7 @@ import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
+import blackco.photos.metadata.MyTag;
 import blackco.photos.spring.AppConfig;
 import blackco.photos.spring.FlickrPhoto;
 import blackco.photos.spring.FlickrPhotoDate;
@@ -19,23 +19,26 @@ import blackco.photos.spring.GetInfoService;
 import blackco.photos.spring.MyPhoto;
 import blackco.photos.spring.MyPhotos;
 import blackco.photos.spring.PageSummary;
-import blackco.photos.spring.PhotosService;
 import blackco.photos.spring.SearchCriteria;
 import blackco.photos.spring.SearchService;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.drew.metadata.Metadata;
 
 public class ComplexComparison {
 
 	private static final Logger logger = Logger.getLogger(ComplexComparison.class);
 	
-	private static String cache;
+	//private static String cache;
 	private static String path = null;
 	
-	private ApplicationContext context ;
+	//private ApplicationContext context ;
 	private SearchService search;
 	private GetInfoService getInfo;
 	private GetExifService getExif;
 	private MyPhotos myPhotos;
-	private PhotosService photosService;
+	//private PhotosService photosService;
 	
 
 	public ComplexComparison(final ApplicationContext context){
@@ -45,7 +48,7 @@ public class ComplexComparison {
 		getInfo = context.getBean(GetInfoService.class);
 		getExif = context.getBean(GetExifService.class);
 		myPhotos =context.getBean(MyPhotos.class);
-		photosService = context.getBean(PhotosService.class);
+		//photosService = context.getBean(PhotosService.class);
 	}
 	
 	
@@ -208,7 +211,8 @@ public class ComplexComparison {
 			logger.info("ComplexComparision: Processed " + count
 					+ " of " + list.size());
 			
-			myPhotos.save();
+			// TODO 1) add argument of which photo to save!
+			myPhotos.save(p);
 		}
 			
 			
@@ -238,7 +242,154 @@ public class ComplexComparison {
 		
 		return photos.size();
 	}
+	
+	private int logMessagesInJson(FileWriter f, ArrayList<MyPhoto> photos){
+		
+		this.log(f, "{");
+		for ( MyPhoto p: photos){
+			this.log(f, "filename':");
+			this.log(f, p.getFilename());
+			this.log(f, ",");
+		}
+		this.log(f, "}");
+		return photos.size();
+	}
 
+	
+	private final static ObjectMapper mapper;
+	   static {
+	      mapper = new ObjectMapper();
+	}
+	
+	public static String serialize(FileWriter f1, Object object) {
+	      try {
+	    	  
+	    	  try {
+				mapper.writeValue(f1, object);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+	    	  
+	         return mapper.writeValueAsString(object);
+	      } catch (JsonProcessingException e) {
+	         e.printStackTrace();
+	      }
+	      return null;
+	   }
+	
+	
+	public Summary getSummary(){
+		
+		Summary s = new Summary();
+		
+		for ( String dir : this.myPhotos.getDirectories()){
+		
+				s.unprocessed = s.unprocessed + this.myPhotos.getUnprocessedPhotos(dir).size();
+				s.unmatched = s.unmatched + this.myPhotos.getUnmatchedPhotos(dir).size();
+				s.matched = s.matched + this.myPhotos.getMatchedPhotos(dir).size();
+				s.nocamera = s.nocamera + this.myPhotos.getInsufficientMetaDataNoCamera(dir).size();
+				s.nodate = s.nodate + this.myPhotos.getInsufficientMetaDataNoDate(dir).size();
+		}
+	
+		return s;
+	}
+	
+	public ArrayList<Setting> getSettings(){
+		
+		ArrayList<Setting> settings = new ArrayList<Setting>();
+		
+		for ( String dir :  this.myPhotos.getDirectories()){
+			settings.add( new Setting(dir));
+		}
+		
+		return settings;
+	}
+	
+	public ArrayList<MyPhoto> getUnprocessedPhotos(){
+		
+		ArrayList<MyPhoto> unprocessedToJson = new ArrayList<MyPhoto>();
+	
+		for ( String dir : this.myPhotos.getDirectories()){
+			unprocessedToJson.addAll(this.myPhotos.getUnprocessedPhotos(dir));
+		}
+		
+		return unprocessedToJson;
+	}
+
+	public ArrayList<MyPhoto> getMatchedPhotos(){
+		
+		ArrayList<MyPhoto> result = new ArrayList<MyPhoto>();
+	
+		for ( String dir : this.myPhotos.getDirectories()){
+			result.addAll(this.myPhotos.getMatchedPhotos(dir));
+		}
+		
+		return result;
+	}
+
+	public ArrayList<MyPhoto> getUnmatchedPhotos(){
+		
+		ArrayList<MyPhoto> result = new ArrayList<MyPhoto>();
+	
+		for ( String dir : this.myPhotos.getDirectories()){
+			result.addAll(this.myPhotos.getUnmatchedPhotos(dir));
+		}
+		
+		return result;
+	}
+	
+	public ArrayList<MyPhoto> getInsufficientMetaDataNoDate(){
+		
+		ArrayList<MyPhoto> result = new ArrayList<MyPhoto>();
+	
+		for ( String dir : this.myPhotos.getDirectories()){
+			
+			result.addAll(this.myPhotos.getInsufficientMetaDataNoDate(dir));
+		}
+		
+		logger.info("getInsufficientMetadataNoDate(): myPhotos = " + myPhotos ); 
+		
+		return result;
+	}
+	
+	public void serializeMetadataForPhotosWithInsufficientMetaData(String dir) throws IOException{
+		
+		
+		ArrayList<Metadata> results = new ArrayList<Metadata>();
+		
+		for ( MyPhoto p : getInsufficientMetaDataNoDate()){
+			
+			FileWriter f1 = new FileWriter(dir + "/metadata/nodate" + p.getFilename().hashCode() + ".json");
+			this.serialize(f1, p.getSuggestedDateTags());
+					
+			f1.close();
+		}
+		
+		for ( MyPhoto p : getInsufficientMetaDataNoCamera()){
+			
+			FileWriter f1 = new FileWriter(dir + "/metadata/nocamera" + p.getFilename().hashCode() + ".json");
+			this.serialize(f1, p.getSuggestedCameraTags());
+			
+				
+			f1.close();
+		}
+		
+		logger.info("serialMetadaraForPhotosWithInSufficientMetadata(): end" );
+
+	}
+	
+	public ArrayList<MyPhoto> getInsufficientMetaDataNoCamera(){
+		
+		ArrayList<MyPhoto> result = new ArrayList<MyPhoto>();
+	
+		for ( String dir : this.myPhotos.getDirectories()){
+			result.addAll(this.myPhotos.getInsufficientMetaDataNoCamera(dir));
+		}
+		
+		return result;
+	}
+	
 	public static void main(String[] args) {
 
 		AnnotationConfigApplicationContext context 
@@ -250,14 +401,11 @@ public class ComplexComparison {
 		config.init(args);
 
 		int i;
-		boolean summary = false;
-		boolean tryAgain = ComplexComparison.IF_UNMATCHED_DO_NOT_SEARCH;
-				
 		
-		String upload = "/Users/blackco/Pictures/test/upload.txt";
-		String matches = "/Users/blackco/Pictures/test/matches.txt";
-		String noExif = "/Users/blackco/Pictures/test/noExif.txt";
-
+		boolean tryAgain = ComplexComparison.IF_UNMATCHED_DO_NOT_SEARCH;
+		String results = "/Users/blackco/Documents/java/src/photos/web-seed/angular-seed/app";
+				
+	
 		for (i = 0; i < args.length; i++) {
 			switch (args[i]) {
 
@@ -265,23 +413,10 @@ public class ComplexComparison {
 				if (i < args.length)
 					path = args[++i];
 				break;
-			case "-summary":
+				
+			case "-results":
 				if (i < args.length)
-					summary = true;
-				break;
-			case "-upload":
-				if (i < args.length)
-					upload = args[++i];
-				break;
-
-			case "-matches":
-				if (i < args.length)
-					upload = args[++i];
-				break;
-
-			case "-noExif":
-				if (i < args.length)
-					noExif = args[++i];
+					results = args[++i];
 				break;
 			
 			case "-tryAgain":
@@ -308,8 +443,8 @@ public class ComplexComparison {
 		logger.debug("ComplexComparison: comparing contents of these directories= " + myPhotos.getDirectories());
 		
 		c.myPhotos.addDirectory(path);
-		c.myPhotos.addDirectory("/Users/blackco/Pictures/test3");
-		c.myPhotos.addDirectory("/Users/blackco/Pictures/test4");
+		//c.myPhotos.addDirectory("/Users/blackco/Pictures/test3");
+		//c.myPhotos.addDirectory("/Users/blackco/Pictures/test4");
 		
 		c.process(tryAgain);
 
@@ -318,54 +453,42 @@ public class ComplexComparison {
 		FileWriter f3 = null;
 		FileWriter f4 = null;
 		FileWriter f5 = null;
+		FileWriter f6 = null;
+		FileWriter f7 = null;
 
 		try {
-			f1 = new FileWriter("/Users/blackco/Pictures/test/unprocessed.txt");
-			f2 = new FileWriter("/Users/blackco/Pictures/test/unmatched.txt");
-			f3 = new FileWriter("/Users/blackco/Pictures/test/nodate.txt");
-			f4 = new FileWriter("/Users/blackco/Pictures/test/nomcamera.txt");
-			f5 = new FileWriter("/Users/blackco/Pictures/test/matched.txt");
+			f1 = new FileWriter(results + "/unprocessed/unprocessed.json");
+			f2 = new FileWriter(results + "/unmatched/unmatched.json");
+			f3 = new FileWriter(results + "/unmatched/nodate.json");
+			f4 = new FileWriter(results + "/unmatched/nocamera.json");
+			f5 = new FileWriter(results + "/matched/matched.json");
+			f6 = new FileWriter(results + "/summary/summary.json");
+			f7 = new FileWriter(results + "/settings/settings.json");
 			
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 
-		int unprocessed = 0;
-		int matched = 0;
-		int unmatched = 0;
-		int nodate=0;
-		int nocamera = 0;
 		
-		
-		for ( String dir : c.myPhotos.getDirectories()){
-			
-			logger.debug("Processing " + dir);
-			
-			unprocessed = unprocessed + c.logMessages(f1, c.myPhotos.getUnprocessedPhotos(dir));
-			unmatched = unmatched + c.logMessages(f2, c.myPhotos.getUnmatchedPhotos(dir));
-			nodate = nodate + c.logMessages(f3, c.myPhotos.getInsufficientMetaDataNoCamera(dir));
-			nocamera = nocamera + c.logMessages(f4, c.myPhotos.getInsufficientMetaDataNoDate(dir));
-			matched = matched + c.logMessages(f5, c.myPhotos.getMatchedPhotos(dir));
-		}
-		
-
-		System.out.println("unprocessed     = " + unprocessed);
-		System.out.println("unmatched		= " + unmatched);
-		System.out.println("no date			= " + nodate);
-		System.out.println("no camera		= " + nocamera);
-		
-		System.out.println("matched		    = " + matched);
-		System.out.println("total files     = " + c.myPhotos.size());
-		
-			
 				
 		try {
+			c.serialize(f1, c.getUnprocessedPhotos());
+			c.serialize(f2, c.getUnmatchedPhotos());
+			c.serialize(f3, c.getInsufficientMetaDataNoDate());
+			c.serialize(f4, c.getInsufficientMetaDataNoCamera());
+			c.serialize(f5, c.getMatchedPhotos());
+			c.serialize(f6, c.getSummary());
+			c.serialize(f7 ,c.getSettings());
+			c.serializeMetadataForPhotosWithInsufficientMetaData(results);
+
+			
 			f1.close();
 			f2.close();
 			f3.close();
 			f4.close();
 			f5.close();
+			f6.close();
 
 		} catch (IOException e) {
 			
