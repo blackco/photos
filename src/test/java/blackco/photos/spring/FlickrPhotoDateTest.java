@@ -1,12 +1,9 @@
 package blackco.photos.spring;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
-import java.text.DateFormat;
-import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Locale;
 
 import org.apache.log4j.Logger;
 import org.junit.Test;

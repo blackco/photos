@@ -49,6 +49,8 @@ public interface MyPhotos {
 	
 	public void save();
 	
+	public void save(MyPhoto myPhoto);
+	
 	public void init(String cacheLocation);
 	
 	public void empty();

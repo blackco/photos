@@ -1,9 +1,13 @@
 package blackco.photos.spring;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Date;
 
 import org.apache.log4j.Logger;
+
+import blackco.photos.metadata.MyTag;
+import blackco.photos.metadata.MyTags;
 
 import com.drew.imaging.ImageMetadataReader;
 import com.drew.metadata.Directory;
@@ -78,6 +82,8 @@ public class MyPhotoMetaDataReaderImpl implements MyPhotoMetaDataReader {
 		// obtain the Exif directory
 		ExifSubIFDDirectory directory = metadata
 				.getFirstDirectoryOfType(ExifSubIFDDirectory.class);
+		
+
 
 		// query the tag's value
 
@@ -107,6 +113,114 @@ public class MyPhotoMetaDataReaderImpl implements MyPhotoMetaDataReader {
 
 	}
 	
+	public MyTags getSuggestedCameraTags(Metadata metadata){
+		
+		MyTags l1 = new MyTags();
+		
+		ArrayList<String> searchFor = new ArrayList<String>(); 
+		
+		searchFor.add("iPhone");
+		searchFor.add("Canon");
+		searchFor.add("Sony");
+		searchFor.add("camera");
+		searchFor.add("Make");
+	
+		l1.list.addAll(this.getSuggestedTags(metadata, searchFor));
+		
+		/*
+		l1.list.addAll(this.getMyTagsForDirectory(metadata
+				.getFirstDirectoryOfType(ExifIFD0Directory.class)));
+		
+		l1.list.addAll(this.getMyTagsForDirectory(metadata
+			.getFirstDirectoryOfType(ExifSubIFDDirectory.class)));
+		
+			
+		*/	
+		
+		return l1;
+	}
+	
+	public MyTags getSuggestedDateTags(Metadata metadata){
+		
+		
+		MyTags l1 = new MyTags();
+		
+		ArrayList<String> searchFor = new ArrayList<String>(); 
+		
+		
+		searchFor.add("Jan");
+		searchFor.add("Feb");
+		searchFor.add("Mar");
+		searchFor.add("Apr");
+		searchFor.add("day");
+		searchFor.add("Month");
+		searchFor.add("Date");
+		
+		l1.list.addAll(this.getSuggestedTags(metadata, searchFor));
+		
+		
+		return l1;
+	}
+	
+	
+	
+	private  ArrayList<MyTag> getMyTagsForDirectory(Directory directory){
+	
+		
+		ArrayList<MyTag> l1 = new ArrayList<MyTag>();
+		
+		for (Tag tag : directory.getTags()) {
+			MyTag myTag = new MyTag();
+			
+			myTag.directory = tag.getDirectoryName();
+			myTag.tagValue = tag.getDescription();
+			myTag.tagName = tag.getTagName();
+			
+			logger.info("myTag.name = " + myTag.tagName + ",value=" + myTag.tagValue);
+			
+			l1.add(myTag);
+		}
+		
+		return l1;
+	
+	}
+
+	private ArrayList<MyTag> getSuggestedTags(Metadata metadata, 
+				ArrayList<String> searchFor) {
+
+		ArrayList<MyTag> l1 = new ArrayList<MyTag>();
+		
+		
+		
+		try {
+		
+			for (Directory directory : metadata.getDirectories()) {
+				for (Tag tag : directory.getTags()) {
+					for ( String searching: searchFor){
+					if ( tag.getDescription().contains(searching)){
+						MyTag myTag = new MyTag();
+						
+						myTag.directory = tag.getDirectoryName();
+						myTag.tagValue = tag.getDescription();
+						myTag.tagName = tag.getTagName();
+						
+						l1.add(myTag);
+						
+						logger.info("Suggested: myTag.name = " + myTag.tagName + ",value=" + myTag.tagValue);
+						
+					}
+					}
+				}
+			}
+		} catch (Exception e) {
+			System.err.println("UsingDrewNoakes.printAllTags(): error");
+			e.printStackTrace();
+		}
+		
+		return l1;
+	}
+
+	
 	public void printAllTags(File jpegFile) {
 
 		try {
@@ -122,6 +236,8 @@ public class MyPhotoMetaDataReaderImpl implements MyPhotoMetaDataReader {
 			e.printStackTrace();
 		}
 	}
+	
+	
 	
 
 

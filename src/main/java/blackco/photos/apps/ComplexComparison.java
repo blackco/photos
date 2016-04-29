@@ -1,10 +1,17 @@
 package blackco.photos.apps;
 
+import java.awt.AlphaComposite;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+
+import javax.imageio.ImageIO;
 
 import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
@@ -30,15 +37,14 @@ public class ComplexComparison {
 
 	private static final Logger logger = Logger.getLogger(ComplexComparison.class);
 	
-	//private static String cache;
 	private static String path = null;
 	
-	//private ApplicationContext context ;
+
 	private SearchService search;
 	private GetInfoService getInfo;
 	private GetExifService getExif;
 	private MyPhotos myPhotos;
-	//private PhotosService photosService;
+	
 	
 
 	public ComplexComparison(final ApplicationContext context){
@@ -48,7 +54,7 @@ public class ComplexComparison {
 		getInfo = context.getBean(GetInfoService.class);
 		getExif = context.getBean(GetExifService.class);
 		myPhotos =context.getBean(MyPhotos.class);
-		//photosService = context.getBean(PhotosService.class);
+	
 	}
 	
 	
@@ -390,6 +396,41 @@ public class ComplexComparison {
 		return result;
 	}
 	
+	public void createThumbnails(String location, ArrayList<MyPhoto> photos){
+		
+		for ( MyPhoto p: photos){
+			BufferedImage originalImage;
+			try {
+				originalImage = ImageIO.read(new File(p.getFilename()));
+				
+				int type = originalImage.getType() == 0? BufferedImage.TYPE_INT_ARGB : originalImage.getType();
+				
+				BufferedImage resizeImageJpg = resizeImage(originalImage, type);
+				ImageIO.write(resizeImageJpg, "jpg", new File(location + "/" + p.getId() + ".jpg")); 
+				
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				logger.error(e);
+			}
+			
+
+		}
+		
+	}
+	
+	private static BufferedImage resizeImage(BufferedImage originalImage, int type){
+		
+		int IMG_WIDTH = 100;
+		int IMG_HEIGHT = 100;
+		
+		BufferedImage resizedImage = new BufferedImage(IMG_WIDTH, IMG_HEIGHT, type);
+		Graphics2D g = resizedImage.createGraphics();
+		g.drawImage(originalImage, 0, 0, IMG_WIDTH, IMG_HEIGHT, null);
+		g.dispose();
+			
+		return resizedImage;
+	}
+	
 	public static void main(String[] args) {
 
 		AnnotationConfigApplicationContext context 
@@ -481,6 +522,8 @@ public class ComplexComparison {
 			c.serialize(f6, c.getSummary());
 			c.serialize(f7 ,c.getSettings());
 			c.serializeMetadataForPhotosWithInsufficientMetaData(results);
+			c.createThumbnails(results, c.getInsufficientMetaDataNoDate() );
+			c.createThumbnails(results, c.getInsufficientMetaDataNoCamera());
 
 			
 			f1.close();

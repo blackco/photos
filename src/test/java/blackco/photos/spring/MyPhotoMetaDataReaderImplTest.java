@@ -1,6 +1,7 @@
 package blackco.photos.spring;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
@@ -17,11 +18,11 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Bean;
 
-import blackco.photos.apps.ComplexComparisonTest;
+import blackco.photos.metadata.MyTag;
+import blackco.photos.metadata.MyTags;
 
 import com.drew.imaging.ImageMetadataReader;
 import com.drew.imaging.ImageProcessingException;
-import com.drew.metadata.Metadata;
 
 public class MyPhotoMetaDataReaderImplTest {
 	
@@ -75,6 +76,7 @@ public class MyPhotoMetaDataReaderImplTest {
 		expected.put("IMG_0131.JPG", "Canon Canon DIGITAL IXUS 500");
 		expected.put("IMG_2017.jpg", "null null");
 	
+	
 		ArrayList<Path> list=photoFinder.getOnDiskList(home+photoDir);
 		
 		for (Path s : list) {
@@ -127,6 +129,7 @@ public class MyPhotoMetaDataReaderImplTest {
 		expected.put("IMAG0071.jpg", getDate(2011,7,29,13,41,35));
 		expected.put("IMG_0131.JPG", getDate(2005,0,9,13,33,27));
 		expected.put("IMG_2017.jpg", null);
+		
 	
 		ArrayList<Path> list=photoFinder.getOnDiskList(home+photoDir);
 		
@@ -152,6 +155,51 @@ public class MyPhotoMetaDataReaderImplTest {
 		}
 		
 		
+	}
+	
+	/*
+	 * Test
+	 * 
+	 * Directory photos3/IMG_2017.jpg
+	 * 
+			Dir			Name				Value
+			File		File Modified Date	Sun Mar 27 16:21:11 BST 2016
+			ICC Profile	Profile Date/Time	Mon Mar 09 06:49:00 GMT 1998
+	 * 
+	 */
+	@Test
+	public void testGetSuggestedDateTags(){
+		
+		MyPhotoMetaDataReader reader = context.getBean(	MyPhotoMetaDataReader.class );
+		
+		File jpegFile  = new File(home+photoDir+"/IMG_2017.jpg");
+		HashMap<String, String> expectedResults = new HashMap<String, String>();
+		
+		expectedResults.put("File Modified Date", "Sun Mar 27 16:21:11 BST 2016");
+		expectedResults.put("Profile Date/Time", "Mon Mar 09 06:49:00 GMT 1998");
+		
+		try {
+			MyTags myTags = reader.getSuggestedDateTags(ImageMetadataReader.readMetadata(jpegFile));
+		
+			for ( MyTag tag : myTags.list){
+				
+				assertEquals(tag.tagValue, expectedResults.get(tag.tagName));
+			}
+		
+		} catch (ImageProcessingException | IOException e) {
+			// TODO Auto-generated catch block
+			logger.error(e);
+			assertTrue(false);
+		}
+		
+		assertTrue(true);
+	}
+	
+	
+	@Test
+	public void testGetSuggestedCamera(){
+		logger.info("TODO");
+		assertTrue(true);
 	}
 
 }
