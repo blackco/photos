@@ -406,7 +406,7 @@ public class ComplexComparison {
 				int type = originalImage.getType() == 0? BufferedImage.TYPE_INT_ARGB : originalImage.getType();
 				
 				BufferedImage resizeImageJpg = resizeImage(originalImage, type);
-				ImageIO.write(resizeImageJpg, "jpg", new File(location + "/" + p.getId() + ".jpg")); 
+				ImageIO.write(resizeImageJpg, "jpg", new File(location + "/img/" + p.getId() + ".jpg")); 
 				
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
@@ -524,6 +524,7 @@ public class ComplexComparison {
 			c.serializeMetadataForPhotosWithInsufficientMetaData(results);
 			c.createThumbnails(results, c.getInsufficientMetaDataNoDate() );
 			c.createThumbnails(results, c.getInsufficientMetaDataNoCamera());
+			c.createThumbnails(results, c.getUnmatchedPhotos());
 
 			
 			f1.close();
