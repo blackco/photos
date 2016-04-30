@@ -33,16 +33,20 @@ public class MetadataTester {
 	    
 	    if (f.exists()) {
 	    	
+	    	meta.printAllTags(f);
+	    	/*
 	        FileWriter f1;
 			try {
-				f1 = new FileWriter(dir + "/Users/blackco/Pictures/test2/IMG_0380.json");
-				meta.serialize(f1, meta.printAllTags(f));
+				//f1 = new FileWriter(dir + "/Users/blackco/Pictures/test2/IMG_0380.json");
+				//meta.serialize(f1, meta.printAllTags(f));
+				
+				meta.printAllTags(f);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 	        
-	        
+	        */
 	    } else {
 	        System.out.println("cannot find file: " + filename);
 	    }

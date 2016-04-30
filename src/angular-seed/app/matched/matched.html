@@ -1,0 +1,16 @@
+ <ul>
+ <table class="matched photos">
+  <tr>
+	<th>flickrRef</th>
+    <th>Filename</th>
+  </tr>
+  <tr ng-repeat="photo in photos">
+	<td>
+	<a href="https://www.flickr.com/photos/87097515@N00/{{photo.flickrPhotoId}}/in/datetaken/" | json>{{photo.flickrPhotoId}}</a>
+	</td>
+	<td>
+	  {{photo.filename}}
+	</td>
+  </tr>
+ </table>
+</ul>

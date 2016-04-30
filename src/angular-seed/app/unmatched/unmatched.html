@@ -1,0 +1,32 @@
+<ul>
+
+<table class="unmatched photos" border="1" style="width:100%" background-color:#f1f1c1>
+  <tr>
+        <th>Local Disk Thumbnail</th>
+        <th>filename</th>
+        <th>Date Taken</th>
+        <th>Camera Used</th>
+        <th>Id<th>
+  </tr>
+  <tr ng-repeat="photo in photos">
+
+        <td>
+          <img ng-src="/app/img/{{photo.id}}.jpg" height="100" width-"100">
+        </td>
+        <td>
+        <a href="#/metadata/{{reportTypeId}}{{photo.id}}" | json>{{photo.filename}}</a>     
+        </td>
+        <td>
+           {{photo.formatedDateTaken}}
+        </td> 
+        <td> 
+           {{photo.camera}}
+        </td>
+        <td>
+        	{{photo.id}}
+        </td>
+        
+        
+  </tr>
+ </table> 
+</ul>

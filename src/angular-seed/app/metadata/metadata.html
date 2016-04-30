@@ -1,0 +1,33 @@
+<p>This is the partial for view 2.</p>
+<p>
+  Showing of 'interpolate' filter:
+  {{ 'Current version is v%VERSION%.' | interpolate }}
+  <br>
+</p>
+<br>
+
+<table class="insufficient metadata" border="1" style="width:100%" background-color:#f1f1c1>
+  
+  <tr>
+        <th>Directory</th>
+        <th>Name</th>
+        <th>Value</th>
+
+  </tr>
+  <tr ng-repeat="tag in Directories.list">
+
+ 
+        <td>
+           {{tag.directory}}
+        </td> 
+        <td> 
+           {{tag.tagName}}
+        </td>
+        <td>
+          {{tag.tagValue}}
+        </td>
+        
+        
+  </tr>
+ </table> 
+
