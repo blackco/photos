@@ -366,7 +366,7 @@ public class ComplexComparison {
 		
 		for ( MyPhoto p : getInsufficientMetaDataNoDate()){
 			
-			FileWriter f1 = new FileWriter(dir + "/metadata/nodate" + p.getFilename().hashCode() + ".json");
+			FileWriter f1 = new FileWriter(dir + "/metadata/nodate" + p.getId()+ ".json");
 			this.serialize(f1, p.getSuggestedDateTags());
 					
 			f1.close();
@@ -374,7 +374,7 @@ public class ComplexComparison {
 		
 		for ( MyPhoto p : getInsufficientMetaDataNoCamera()){
 			
-			FileWriter f1 = new FileWriter(dir + "/metadata/nocamera" + p.getFilename().hashCode() + ".json");
+			FileWriter f1 = new FileWriter(dir + "/metadata/nocamera" + p.getId() + ".json");
 			this.serialize(f1, p.getSuggestedCameraTags());
 			
 				
@@ -444,9 +444,11 @@ public class ComplexComparison {
 		int i;
 		
 		boolean tryAgain = ComplexComparison.IF_UNMATCHED_DO_NOT_SEARCH;
-		String results = "/Users/blackco/Documents/java/src/photos/web-seed/angular-seed/app";
+		
+		String results = "/Users/blackco/Documents/java/src/photos/src/angular-seed/app";
 				
-	
+
+		
 		for (i = 0; i < args.length; i++) {
 			switch (args[i]) {
 
