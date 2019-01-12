@@ -114,6 +114,12 @@ public class ComplexComparisonTest {
 
 				return summary;
 			}
+
+			@Override
+			public void download(PageSummary s) {
+				// TODO Auto-generated method stub
+				
+			}
 		};
 	}
 
@@ -622,7 +628,7 @@ public class ComplexComparisonTest {
 		myPhotos.init(home+cacheLocation);
 		p1 = null;
 		
-		
+		/*
 		logger.debug("testProcessInsufficientMetaDataMissingCamera: "
 				+ "myPhotos.getInsufficientMetaDataNoCamera(dir)"
 				+ myPhotos.getInsufficientMetaDataNoCamera(mockDirectory));
@@ -631,7 +637,8 @@ public class ComplexComparisonTest {
 				+ "myPhotos.getInsufficientMetaDataNoCamera(dir).contains(p1)"
 				+ myPhotos.getInsufficientMetaDataNoCamera(mockDirectory)
 						.contains(p1));
-
+		*/
+		
 		boolean foundByKey = false;
 
 		for (MyPhoto p : myPhotos.getPhotos(mockDirectory)) {

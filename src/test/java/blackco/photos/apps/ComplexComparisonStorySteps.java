@@ -118,6 +118,12 @@ public class ComplexComparisonStorySteps {
 
 				return summary;
 			}
+
+			@Override
+			public void download(PageSummary s) {
+				// TODO Auto-generated method stub
+				
+			}
 		};
 	}
 
@@ -184,10 +190,11 @@ public class ComplexComparisonStorySteps {
 	private AnnotationConfigApplicationContext context;// = new AnnotationConfigApplicationContext(ComplexComparisonStorySteps.class);
 	
 
-	private String cacheLocation = "/src/test/test-fixtures/myPhotosUnitTestsCache.json";
+	private String cacheLocation = "/src/test/test-fixtures";
 	
 	private ComplexComparisonStorySteps steps;
-	private String home;
+	private String home = "/Users/blackco/Documents/java/src/photos";
+	
 	
 	protected ArrayList<FlickrPhoto> photosTakenAt; 
 	protected String mockDirectory = "TEST";
@@ -195,6 +202,10 @@ public class ComplexComparisonStorySteps {
 	@BeforeStories
 	public void beforeStories() {
 		context = new AnnotationConfigApplicationContext(ComplexComparisonStorySteps.class);
+		
+		MyPhotos myPhotos = context.getBean(MyPhotos.class);
+
+		myPhotos.init(home+cacheLocation);
 	 
 	}
 	
@@ -238,6 +249,33 @@ public class ComplexComparisonStorySteps {
 	MyPhoto p1;
 	FlickrPhoto p2;
 	
+	
+	@Given("two amended photos from last statement: $table")
+	public void theReusedPhotos(ExamplesTable table){
+	    
+				MyPhotos myPhotos = context.getBean(MyPhotos.class);
+				
+				PhotosService photosService = context.getBean(PhotosService.class);
+				
+				
+		        for(Map<String, String> row : table.getRows()){
+		        	
+		        	if ( row.get("StoredOn").equals("Flickr")){
+		        		
+		        		FlickrPhoto p2 = photosService.getPhoto(row.get("id"));
+		        		
+		        		p2.dateTaken = FlickrPhotoDate
+		        				.setDateInFlickrTextFormat(row.get("dateTaken"));
+		        		p2.camera = row.get("camera");
+		        		
+		        		photosService.setPhoto(p2);
+		        		
+		        	} 
+		        }
+		        
+	
+	}
+	
 	@Given("two photos: $table")
 	public void thePhotos(ExamplesTable table){
 		
@@ -260,6 +298,7 @@ public class ComplexComparisonStorySteps {
 	        		
 	        	} else {
 	        		p1 = new MyPhoto(); 
+	        		p1.setFilename(row.get("id"));
 	        		p1.setDateTaken( FlickrPhotoDate
 	        				.setDateInFlickrTextFormat(row.get("dateTaken")));
 	        		p1.setCamera(row.get("camera"));
@@ -294,6 +333,11 @@ public class ComplexComparisonStorySteps {
 		
 	}
 	
+	@Given("the set of processed photos in the previous story")
+	public void doNothing(){
+		// use last set of photos!
+	}
+	
 	@Then("there are no unmatched photos")
 	public void noUnMatchedPhotos(){
 		
@@ -319,10 +363,18 @@ public class ComplexComparisonStorySteps {
 		
 	}
 	
-
 	
 	@Then("the two photos match")
 	public void bothPhotosMatch(){
+		assertTrue(photosCompare());
+	}
+	
+	@Then("the two photos are unmatched")
+	public void bothPhotosDoNotMatch(){
+		assertTrue(!photosCompare());
+	}
+	
+	private boolean photosCompare(){
 		MyPhotos myPhotos = context.getBean(MyPhotos.class);
 
 		Collection<MyPhoto> cachedPhotos = myPhotos.getPhotos(mockDirectory);
@@ -339,7 +391,7 @@ public class ComplexComparisonStorySteps {
 		}
 
 		//assertEquals(p1.getFlickrPhotoId(), p2.id);
-		assertTrue(matches);
+		return matches;
 	}
 	
 	@Then("both photos are the same")
@@ -356,15 +408,63 @@ public class ComplexComparisonStorySteps {
 	public void samePhotosAsLastTest(){
 		// Change some aspect, process() again, but still matches because not
 		// actually processed
-		p1.setCamera(p1.getCamera()+ "v2");	
+		p1.setCamera("IPHONE6");	
+		processedPhotos();
+	}
+	
+	@When("this set of photos is processed but we do not try to match any unmatched photos")
+	public void reprocessButDontTryAgainToMatch(){
 		
+			ComplexComparison complex = new ComplexComparison(context);
+
+			complex.process();
+	}
+
+	@When("this set of photos is processed and we try again to match any unmatched photos")
+	public void reprocessButTryAgainToMatch(){
+		ComplexComparison complex = new ComplexComparison(context);
+
+		complex.process(ComplexComparison.IF_UNMATCHED_SEARCH_AGAIN);
 	}
 	
 	@Then("these photos are not reprocessed")
 	public void processedPhotosNotChanged(){
 		noUnProcessedPhotos();
-		noUnMatchedPhotos();
-		bothPhotosMatch();
+	}
+	
+	
+	@Then("photo id 5 is identified as having insufficient metadata to process")
+	public void photoIdInSufficientMetadata(String id){
+		
+		MyPhotos myPhotos = context.getBean(MyPhotos.class);	
+		
+		
+		boolean foundByKey = false;
+		for (MyPhoto p : myPhotos.getInsufficientMetaDataNoDate(mockDirectory)) {
+
+			if (id.equals(p.getFilename())) {
+				foundByKey = true;
+			}
+		}
+
+		assertTrue(foundByKey);
+	}
+	
+	@Then("photo id $id is not processed")
+	public void photoIdNotProcessed(String id){
+		
+		MyPhotos myPhotos = context.getBean(MyPhotos.class);	
+		
+	
+		boolean foundByKey = false;
+		for (MyPhoto p : myPhotos.getUnprocessedPhotos(mockDirectory)) {
+
+			if (id.equals(p.getFilename())) {
+				foundByKey = true;
+			}
+		}
+
+		assertTrue(foundByKey);
 	}
 
 }
