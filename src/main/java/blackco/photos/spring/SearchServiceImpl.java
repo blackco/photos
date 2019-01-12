@@ -1,6 +1,15 @@
 package blackco.photos.spring;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.StringReader;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.nio.channels.Channels;
+import java.nio.channels.ReadableByteChannel;
 
 import javax.json.Json;
 import javax.json.JsonArray;
@@ -8,13 +17,18 @@ import javax.json.JsonObject;
 import javax.json.JsonReader;
 import javax.json.JsonValue;
 
+import org.apache.log4j.Logger;
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
 import org.scribe.model.Verb;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import blackco.photos.apps.DownloadFiles;
+
 
 public class SearchServiceImpl implements SearchService {
+	
+	private static final Logger logger = Logger.getLogger(SearchServiceImpl.class);
 	
 	private FlickrAuth auth;
 	private Photos photos;
@@ -43,6 +57,7 @@ public class SearchServiceImpl implements SearchService {
 		request.addQuerystringParameter("max_taken_date",FlickrPhotoDate.getDateInFlickrTextFormat(criteria.max_taken_date));
 		request.addQuerystringParameter("format", "json");
 		request.addQuerystringParameter("nojsoncallback", "1");
+		request.addQuerystringParameter("content_type", "1");
 
 		System.out.println("Search.search():"
 				+ "min_taken_date:"+criteria.min_taken_date
@@ -81,6 +96,7 @@ public class SearchServiceImpl implements SearchService {
 			String id = obj.getString("id");
 			
 			FlickrPhoto p = photos.getPhoto(id);
+		
 			
 			if ( p == null ){
 					p = new FlickrPhoto();
@@ -93,7 +109,7 @@ public class SearchServiceImpl implements SearchService {
 			p.secret = obj.getString("secret");
 
 			p.title = obj.getString("title");
-
+			
 			s.photos.add(p);
 		}
 
@@ -101,6 +117,81 @@ public class SearchServiceImpl implements SearchService {
 	}
 
 
+	public void download(PageSummary s){
+		
+		for (FlickrPhoto onFlickrPhoto : s.photos) {
+			
+			getSizes( onFlickrPhoto.id, onFlickrPhoto.title);
 
+		}
+		
+	}
+	
+	private void getSizes(String id, String title)  {
+		
+
+		OAuthRequest request = new OAuthRequest(Verb.GET,
+				"https://api.flickr.com/services/rest/");
+		request.addQuerystringParameter("method", "flickr.photos.getSizes");
+
+		request.addQuerystringParameter("api_key", auth.getApiKey());
+		request.addQuerystringParameter("photo_id", id);
+		request.addQuerystringParameter("format", "json");
+		request.addQuerystringParameter("nojsoncallback", "1");
+
+		Response response = auth.get(request);
+
+		StringReader reader = new StringReader(response.getBody());
+
+		JsonReader jsonReader = Json.createReader(reader);
+		
+		JsonObject jobj = jsonReader.readObject();
+
+		
+		JsonObject object = (JsonObject) jobj.get("sizes");
+		JsonArray array = (JsonArray) object.get("size");
+
+		for (JsonValue val : array) {
+			
+			JsonObject obj = (JsonObject) val;
+		
+			try {
+				
+				if ( obj.getString("label").equals("Original")){
+					saveImage(	obj.getString("source"), title);
+				}
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				logger.info("Cannot persist photo id=" + id + ", title=" + title );
+				e.printStackTrace();
+			}
+		
+		}
+
+		
+		
+
+		
+	}
+
+	private  void saveImage(String imageUrl, String title) throws IOException {
+		URL url = new URL(imageUrl);
+		String fileName = url.getFile();
+		String destName = "/Users/blackco/Downloads/" + title + ".jpg"; // + fileName.substring(fileName.lastIndexOf("/"));
+		System.out.println(destName);
+	 
+		InputStream is = url.openStream();
+		OutputStream os = new FileOutputStream(destName);
+	 
+		byte[] b = new byte[2048];
+		int length;
+	 
+		while ((length = is.read(b)) != -1) {
+			os.write(b, 0, length);
+		}
+	 
+		is.close();
+		os.close();
+	}
 
 }
