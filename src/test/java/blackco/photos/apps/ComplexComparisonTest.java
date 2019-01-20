@@ -116,7 +116,7 @@ public class ComplexComparisonTest {
 			}
 
 			@Override
-			public void download(PageSummary s) {
+			public void download(String path, PageSummary s) {
 				// TODO Auto-generated method stub
 				
 			}
