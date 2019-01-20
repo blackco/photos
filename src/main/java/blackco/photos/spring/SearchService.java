@@ -5,6 +5,6 @@ public interface SearchService {
 
 	public PageSummary search(SearchCriteria criteria);
 	
-	public void download(PageSummary s);
+	public void download(String path, PageSummary s);
 
 }
