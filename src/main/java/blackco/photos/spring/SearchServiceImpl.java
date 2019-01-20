@@ -117,17 +117,17 @@ public class SearchServiceImpl implements SearchService {
 	}
 
 
-	public void download(PageSummary s){
+	public void download(String path, PageSummary s){
 		
 		for (FlickrPhoto onFlickrPhoto : s.photos) {
 			
-			getSizes( onFlickrPhoto.id, onFlickrPhoto.title);
+			getSizes( path, onFlickrPhoto.id, onFlickrPhoto.title);
 
 		}
 		
 	}
 	
-	private void getSizes(String id, String title)  {
+	private void getSizes(String path, String id, String title)  {
 		
 
 		OAuthRequest request = new OAuthRequest(Verb.GET,
@@ -151,19 +151,28 @@ public class SearchServiceImpl implements SearchService {
 		JsonObject object = (JsonObject) jobj.get("sizes");
 		JsonArray array = (JsonArray) object.get("size");
 
+
 		for (JsonValue val : array) {
 			
 			JsonObject obj = (JsonObject) val;
 		
-			try {
+
 				
 				if ( obj.getString("label").equals("Original")){
-					saveImage(	obj.getString("source"), title);
+
+					boolean savedImage = false;
+					int errorCount = 0;
+
+					while ( !savedImage && errorCount < 4) {
+						savedImage = saveImage(path, obj.getString("source"), title);
+						if ( !savedImage){
+							logger.info("Cannot persist title=" + title + ", number of tries= " + errorCount);
+							errorCount ++;
+						}
+
+					}
 				}
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				logger.info("Cannot persist photo id=" + id + ", title=" + title );
-				e.printStackTrace();
+
 			}
 		
 		}
@@ -172,26 +181,44 @@ public class SearchServiceImpl implements SearchService {
 		
 
 		
-	}
 
-	private  void saveImage(String imageUrl, String title) throws IOException {
-		URL url = new URL(imageUrl);
-		String fileName = url.getFile();
-		String destName = "/Users/blackco/Downloads/" + title + ".jpg"; // + fileName.substring(fileName.lastIndexOf("/"));
-		System.out.println(destName);
-	 
-		InputStream is = url.openStream();
-		OutputStream os = new FileOutputStream(destName);
-	 
-		byte[] b = new byte[2048];
-		int length;
-	 
-		while ((length = is.read(b)) != -1) {
-			os.write(b, 0, length);
-		}
-	 
-		is.close();
-		os.close();
+
+	private  boolean saveImage(String path, String imageUrl, String title)  {
+
+			try {
+				URL url = new URL(imageUrl);
+				String fileName = url.getFile();
+				logger.info("imageUrl = " + imageUrl);
+
+				String destName = null;
+
+				if ( title.isEmpty() ) {
+					destName = path + "/" + fileName.substring(fileName.lastIndexOf("/"));
+				} else {
+					destName = path + "/" + title + fileName.substring(fileName.lastIndexOf("."));
+				}
+					System.out.println(destName);
+
+				InputStream is = url.openStream();
+				OutputStream os = new FileOutputStream(destName);
+
+				byte[] b = new byte[2048];
+				int length;
+
+				while ((length = is.read(b)) != -1) {
+					os.write(b, 0, length);
+				}
+
+				is.close();
+				os.close();
+				return true;
+
+			} catch (Exception e){
+				logger.info("Cannot persist title=" + title  );
+				//logger.error(e);
+				return false;
+
+			}
 	}
 
 }
