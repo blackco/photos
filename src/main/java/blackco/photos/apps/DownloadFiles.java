@@ -67,7 +67,6 @@ public class DownloadFiles {
 		
 		/*
 		 *  DOWNLOAD FROM FLICKR Jan 2019 HACK
-		 * 
 		 */
 		
 		
@@ -79,7 +78,7 @@ public class DownloadFiles {
 		
 
 		logger.debug("CALLING FLICKR");
-		search.download(search.search(s));
+		search.download(path, search.search(s));
 
 	}
 	
@@ -129,8 +128,6 @@ public class DownloadFiles {
 		
 		boolean tryAgain = ComplexComparison.IF_UNMATCHED_DO_NOT_SEARCH;
 		
-		String results = "/Users/blackco/Documents/java/src/photos/src/angular-seed/app";
-				
 
 		
 		for (i = 0; i < args.length; i++) {
@@ -140,11 +137,7 @@ public class DownloadFiles {
 				if (i < args.length)
 					path = args[++i];
 				break;
-				
-			case "-results":
-				if (i < args.length)
-					results = args[++i];
-				break;
+
 			
 			case "-tryAgain":
 				if (i < args.length){
@@ -165,14 +158,6 @@ public class DownloadFiles {
 		DownloadFiles c = new DownloadFiles(context);
 	
 
-		MyPhotos myPhotos = context.getBean(MyPhotos.class);
-		
-		logger.debug("ComplexComparison: comparing contents of these directories= " + myPhotos.getDirectories());
-		
-		c.myPhotos.addDirectory(path);
-		//c.myPhotos.addDirectory("/Users/blackco/Pictures/test3");
-		//c.myPhotos.addDirectory("/Users/blackco/Pictures/test4");
-		
 		c.process(tryAgain);
 
 	
