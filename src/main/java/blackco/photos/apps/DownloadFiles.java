@@ -1,5 +1,6 @@
 package blackco.photos.apps;
 
+
 import java.util.GregorianCalendar;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -7,19 +8,11 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
+import blackco.photos.spring.*;
 import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-import blackco.photos.spring.AppConfig;
-import blackco.photos.spring.GetInfoService;
-import blackco.photos.spring.MyPhoto;
-import blackco.photos.spring.MyPhotos;
-import blackco.photos.spring.PageSummary;
-import blackco.photos.spring.SearchCriteria;
-import blackco.photos.spring.SearchService;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class DownloadFiles {
@@ -32,6 +25,12 @@ public class DownloadFiles {
 	private SearchService search;
 	
 	private MyPhotos myPhotos;
+
+	private GetExifService getExif;
+
+	private GetInfoService getInfo;
+
+	private DownloadService downloadService;
 	
 	
 
@@ -41,45 +40,60 @@ public class DownloadFiles {
 		search = context.getBean(SearchService.class);
 		context.getBean(GetInfoService.class);
 		myPhotos =context.getBean(MyPhotos.class);
+		getInfo = context.getBean(GetInfoService.class);
+		getExif = context.getBean(GetExifService.class);
+		downloadService = context.getBean(DownloadService.class);
 	
 	}
 	
 	
-	/*
-	 *  Test Cases
-	 *  (1) Gets photos taken to second accuracy from MockFlickr API
-	 *  (2) Does not return photos taken a second earlier
-	 *  (3) Does not return photos taken a second later
-	 *  (4) Handles timezone?
-	 *  (5) Dates in inappropriate string format.
-	 *  (6) Empty Array if nothing found, never null!
-	 *  
-	 *  Requires
-	 *  (1) Mock Search  ( returns Flickr IDs )
-	 *  (2) Mock GetInfo ( enriches photo with date taken )
-	 * 
-	 */
+
+
 	
 	public void process(boolean tryAgain){
 		
 		SearchCriteria s = new SearchCriteria();
-		
-		
-		/*
-		 *  DOWNLOAD FROM FLICKR Jan 2019 HACK
-		 */
-		
-		
-		Date d1 = new GregorianCalendar(2005, Calendar.JANUARY,9).getTime();
-		Date d2 = new GregorianCalendar(2005, Calendar.JANUARY,10).getTime();
-		
-		s.min_taken_date = d1;
-		s.max_taken_date = d2;
-		
 
-		logger.debug("CALLING FLICKR");
-		search.download(path, search.search(s));
 
+		// parse date from yyyy-mm-dd pattern
+		Date startDate = new GregorianCalendar(2004, Calendar.OCTOBER,31).getTime();
+		Date endDate = new GregorianCalendar(2005, Calendar.DECEMBER,1).getTime();
+
+
+
+		while ( startDate.before(endDate )) {
+
+
+			s.min_taken_date = startDate;
+			s.max_taken_date = this.addDay(startDate);
+
+			logger.debug("Searching for startDate=" + s.min_taken_date + ", to=" + s.max_taken_date);
+
+			PageSummary summary = search.search(s);
+
+
+			for (FlickrPhoto onFlickrPhoto : summary.photos) {
+
+				getExif.getExif(onFlickrPhoto.id);
+				getInfo.getInfo(onFlickrPhoto.id);
+
+				logger.info(onFlickrPhoto);
+
+
+
+			}
+
+			logger.info("calling download service = " + downloadService );
+
+			//
+			// TODO Moving download functionality into its onw service ...
+			//
+			downloadService.download(path,summary);
+
+			//search.download(path, summary);
+
+			startDate = this.addDay(startDate);
+		}
 	}
 	
 			
@@ -94,7 +108,13 @@ public class DownloadFiles {
 			e.printStackTrace();
 		}
 	}
-	
+
+	private Date addDay(Date date){
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(date);
+		cal.add(Calendar.DATE, 1);
+		return cal.getTime();
+	}
 		
 	private final static ObjectMapper mapper;
 	   static {
