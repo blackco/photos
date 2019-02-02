@@ -1,65 +1,168 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<testsuite failures="0" time="0.39" errors="0" skipped="0" tests="2" name="blackco.photos.spring.MyPhotoMetaDataReaderImplTest">
+<testsuite tests="4" failures="1" name="blackco.photos.spring.MyPhotoMetaDataReaderImplTest" time="0.284" errors="0" skipped="0">
   <properties>
     <property name="java.runtime.name" value="Java(TM) SE Runtime Environment"/>
-    <property name="sun.boot.library.path" value="/Library/Java/JavaVirtualMachines/jdk1.7.0_55.jdk/Contents/Home/jre/lib"/>
-    <property name="java.vm.version" value="24.55-b03"/>
-    <property name="user.country.format" value="GB"/>
+    <property name="sun.boot.library.path" value="/Library/Java/JavaVirtualMachines/jdk1.8.0_121.jdk/Contents/Home/jre/lib"/>
+    <property name="java.vm.version" value="25.121-b13"/>
     <property name="gopherProxySet" value="false"/>
     <property name="java.vm.vendor" value="Oracle Corporation"/>
-    <property name="maven.multiModuleProjectDirectory" value="/Users/blackco/Documents/photos"/>
+    <property name="maven.multiModuleProjectDirectory" value="/Users/colinblack/Documents/workspace/photos"/>
     <property name="java.vendor.url" value="http://java.oracle.com/"/>
     <property name="path.separator" value=":"/>
     <property name="guice.disable.misplaced.annotation.check" value="true"/>
     <property name="java.vm.name" value="Java HotSpot(TM) 64-Bit Server VM"/>
     <property name="file.encoding.pkg" value="sun.io"/>
-    <property name="user.country" value="US"/>
+    <property name="user.country" value="GB"/>
     <property name="sun.java.launcher" value="SUN_STANDARD"/>
     <property name="sun.os.patch.level" value="unknown"/>
     <property name="java.vm.specification.name" value="Java Virtual Machine Specification"/>
-    <property name="user.dir" value="/Users/blackco/Documents/photos"/>
-    <property name="java.runtime.version" value="1.7.0_55-b13"/>
+    <property name="user.dir" value="/Users/colinblack/Documents/workspace/photos"/>
+    <property name="java.runtime.version" value="1.8.0_121-b13"/>
     <property name="java.awt.graphicsenv" value="sun.awt.CGraphicsEnvironment"/>
-    <property name="java.endorsed.dirs" value="/Library/Java/JavaVirtualMachines/jdk1.7.0_55.jdk/Contents/Home/jre/lib/endorsed"/>
+    <property name="java.endorsed.dirs" value="/Library/Java/JavaVirtualMachines/jdk1.8.0_121.jdk/Contents/Home/jre/lib/endorsed"/>
     <property name="os.arch" value="x86_64"/>
-    <property name="java.io.tmpdir" value="/var/folders/8m/rh73ddcj4p51kw5bxgw2c4380000gn/T/"/>
+    <property name="java.io.tmpdir" value="/var/folders/sh/g39tyxb97mn5hzpwbjf_8m480000gn/T/"/>
     <property name="line.separator" value="
 "/>
     <property name="java.vm.specification.vendor" value="Oracle Corporation"/>
     <property name="os.name" value="Mac OS X"/>
-    <property name="classworlds.conf" value="/Users/blackco/Documents/java/lib/apache-maven-3.3.1/bin/m2.conf"/>
+    <property name="classworlds.conf" value="/Users/colinblack/Documents/java/lib/apache-maven-3.6.0/bin/m2.conf"/>
     <property name="sun.jnu.encoding" value="UTF-8"/>
-    <property name="java.library.path" value="/Users/blackco/Library/Java/Extensions:/Library/Java/Extensions:/Network/Library/Java/Extensions:/System/Library/Java/Extensions:/usr/lib/java:."/>
+    <property name="java.library.path" value="/Users/colinblack/Library/Java/Extensions:/Library/Java/Extensions:/Network/Library/Java/Extensions:/System/Library/Java/Extensions:/usr/lib/java:."/>
+    <property name="maven.conf" value="/Users/colinblack/Documents/java/lib/apache-maven-3.6.0/conf"/>
     <property name="java.specification.name" value="Java Platform API Specification"/>
-    <property name="java.class.version" value="51.0"/>
+    <property name="java.class.version" value="52.0"/>
     <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
-    <property name="os.version" value="10.10.4"/>
-    <property name="user.home" value="/Users/blackco"/>
+    <property name="os.version" value="10.13.6"/>
+    <property name="library.jansi.path" value="/Users/colinblack/Documents/java/lib/apache-maven-3.6.0/lib/jansi-native"/>
+    <property name="http.nonProxyHosts" value="local|*.local|169.254/16|*.169.254/16"/>
+    <property name="user.home" value="/Users/colinblack"/>
     <property name="user.timezone" value="Europe/London"/>
     <property name="java.awt.printerjob" value="sun.lwawt.macosx.CPrinterJob"/>
-    <property name="java.specification.version" value="1.7"/>
+    <property name="java.specification.version" value="1.8"/>
     <property name="file.encoding" value="UTF-8"/>
-    <property name="user.name" value="blackco"/>
-    <property name="java.class.path" value="/Users/blackco/Documents/java/lib/apache-maven-3.3.1/boot/plexus-classworlds-2.5.2.jar"/>
-    <property name="java.vm.specification.version" value="1.7"/>
+    <property name="user.name" value="colinblack"/>
+    <property name="java.class.path" value="/Users/colinblack/Documents/java/lib/apache-maven-3.6.0/boot/plexus-classworlds-2.5.2.jar"/>
+    <property name="java.vm.specification.version" value="1.8"/>
     <property name="sun.arch.data.model" value="64"/>
-    <property name="java.home" value="/Library/Java/JavaVirtualMachines/jdk1.7.0_55.jdk/Contents/Home/jre"/>
-    <property name="sun.java.command" value="org.codehaus.plexus.classworlds.launcher.Launcher package"/>
+    <property name="java.home" value="/Library/Java/JavaVirtualMachines/jdk1.8.0_121.jdk/Contents/Home/jre"/>
+    <property name="sun.java.command" value="org.codehaus.plexus.classworlds.launcher.Launcher deploy"/>
     <property name="java.specification.vendor" value="Oracle Corporation"/>
     <property name="user.language" value="en"/>
     <property name="awt.toolkit" value="sun.lwawt.macosx.LWCToolkit"/>
     <property name="java.vm.info" value="mixed mode"/>
-    <property name="java.version" value="1.7.0_55"/>
-    <property name="java.ext.dirs" value="/Users/blackco/Library/Java/Extensions:/Library/Java/JavaVirtualMachines/jdk1.7.0_55.jdk/Contents/Home/jre/lib/ext:/Library/Java/Extensions:/Network/Library/Java/Extensions:/System/Library/Java/Extensions:/usr/lib/java"/>
-    <property name="sun.boot.class.path" value="/Library/Java/JavaVirtualMachines/jdk1.7.0_55.jdk/Contents/Home/jre/lib/resources.jar:/Library/Java/JavaVirtualMachines/jdk1.7.0_55.jdk/Contents/Home/jre/lib/rt.jar:/Library/Java/JavaVirtualMachines/jdk1.7.0_55.jdk/Contents/Home/jre/lib/sunrsasign.jar:/Library/Java/JavaVirtualMachines/jdk1.7.0_55.jdk/Contents/Home/jre/lib/jsse.jar:/Library/Java/JavaVirtualMachines/jdk1.7.0_55.jdk/Contents/Home/jre/lib/jce.jar:/Library/Java/JavaVirtualMachines/jdk1.7.0_55.jdk/Contents/Home/jre/lib/charsets.jar:/Library/Java/JavaVirtualMachines/jdk1.7.0_55.jdk/Contents/Home/jre/lib/jfr.jar:/Library/Java/JavaVirtualMachines/jdk1.7.0_55.jdk/Contents/Home/jre/classes"/>
+    <property name="java.version" value="1.8.0_121"/>
+    <property name="java.ext.dirs" value="/Users/colinblack/Library/Java/Extensions:/Library/Java/JavaVirtualMachines/jdk1.8.0_121.jdk/Contents/Home/jre/lib/ext:/Library/Java/Extensions:/Network/Library/Java/Extensions:/System/Library/Java/Extensions:/usr/lib/java"/>
+    <property name="sun.boot.class.path" value="/Library/Java/JavaVirtualMachines/jdk1.8.0_121.jdk/Contents/Home/jre/lib/resources.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_121.jdk/Contents/Home/jre/lib/rt.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_121.jdk/Contents/Home/jre/lib/sunrsasign.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_121.jdk/Contents/Home/jre/lib/jsse.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_121.jdk/Contents/Home/jre/lib/jce.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_121.jdk/Contents/Home/jre/lib/charsets.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_121.jdk/Contents/Home/jre/lib/jfr.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_121.jdk/Contents/Home/jre/classes"/>
     <property name="java.vendor" value="Oracle Corporation"/>
-    <property name="maven.home" value="/Users/blackco/Documents/java/lib/apache-maven-3.3.1"/>
+    <property name="maven.home" value="/Users/colinblack/Documents/java/lib/apache-maven-3.6.0"/>
     <property name="file.separator" value="/"/>
     <property name="java.vendor.url.bug" value="http://bugreport.sun.com/bugreport/"/>
     <property name="sun.cpu.endian" value="little"/>
     <property name="sun.io.unicode.encoding" value="UnicodeBig"/>
+    <property name="socksNonProxyHosts" value="local|*.local|169.254/16|*.169.254/16"/>
+    <property name="ftp.nonProxyHosts" value="local|*.local|169.254/16|*.169.254/16"/>
     <property name="sun.cpu.isalist" value=""/>
   </properties>
-  <testcase time="0.306" classname="blackco.photos.spring.MyPhotoMetaDataReaderImplTest" name="testGetCamera"/>
-  <testcase time="0.084" classname="blackco.photos.spring.MyPhotoMetaDataReaderImplTest" name="testGetDate"/>
+  <testcase classname="blackco.photos.spring.MyPhotoMetaDataReaderImplTest" name="testGetCamera" time="0.171"/>
+  <testcase classname="blackco.photos.spring.MyPhotoMetaDataReaderImplTest" name="testGetDate" time="0.038"/>
+  <testcase classname="blackco.photos.spring.MyPhotoMetaDataReaderImplTest" name="testGetSuggestedDateTags" time="0.064">
+    <failure message="expected:&lt;S[at Jan 12 17:17:10 GMT 2019]&gt; but was:&lt;S[un Mar 27 16:21:11 BST 2016]&gt;" type="org.junit.ComparisonFailure">org.junit.ComparisonFailure: expected:&lt;S[at Jan 12 17:17:10 GMT 2019]&gt; but was:&lt;S[un Mar 27 16:21:11 BST 2016]&gt;
+	at org.junit.Assert.assertEquals(Assert.java:99)
+	at org.junit.Assert.assertEquals(Assert.java:117)
+	at blackco.photos.spring.MyPhotoMetaDataReaderImplTest.testGetSuggestedDateTags(MyPhotoMetaDataReaderImplTest.java:186)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.junit.internal.runners.TestMethod.invoke(TestMethod.java:59)
+	at org.junit.internal.runners.MethodRoadie.runTestMethod(MethodRoadie.java:98)
+	at org.junit.internal.runners.MethodRoadie$2.run(MethodRoadie.java:79)
+	at org.junit.internal.runners.MethodRoadie.runBeforesThenTestThenAfters(MethodRoadie.java:87)
+	at org.junit.internal.runners.MethodRoadie.runTest(MethodRoadie.java:77)
+	at org.junit.internal.runners.MethodRoadie.run(MethodRoadie.java:42)
+	at org.junit.internal.runners.JUnit4ClassRunner.invokeTestMethod(JUnit4ClassRunner.java:88)
+	at org.junit.internal.runners.JUnit4ClassRunner.runMethods(JUnit4ClassRunner.java:51)
+	at org.junit.internal.runners.JUnit4ClassRunner$1.run(JUnit4ClassRunner.java:44)
+	at org.junit.internal.runners.ClassRoadie.runUnprotected(ClassRoadie.java:27)
+	at org.junit.internal.runners.ClassRoadie.runProtected(ClassRoadie.java:37)
+	at org.junit.internal.runners.JUnit4ClassRunner.run(JUnit4ClassRunner.java:42)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.execute(JUnit4Provider.java:252)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.executeTestSet(JUnit4Provider.java:141)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.invoke(JUnit4Provider.java:112)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.apache.maven.surefire.util.ReflectionUtils.invokeMethodWithArray(ReflectionUtils.java:189)
+	at org.apache.maven.surefire.booter.ProviderFactory$ProviderProxy.invoke(ProviderFactory.java:165)
+	at org.apache.maven.surefire.booter.ProviderFactory.invokeProvider(ProviderFactory.java:85)
+	at org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:115)
+	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:75)
+</failure>
+    <system-out>16:20:32.167 [main] DEBUG o.s.core.env.StandardEnvironment - Adding [systemProperties] PropertySource with lowest search precedence
+16:20:32.168 [main] DEBUG o.s.core.env.StandardEnvironment - Adding [systemEnvironment] PropertySource with lowest search precedence
+16:20:32.168 [main] DEBUG o.s.core.env.StandardEnvironment - Initialized StandardEnvironment with PropertySources [systemProperties,systemEnvironment]
+16:20:32.169 [main] INFO  o.s.c.a.AnnotationConfigApplicationContext - Refreshing org.springframework.context.annotation.AnnotationConfigApplicationContext@4233e892: startup date [Sat Jan 19 16:20:32 GMT 2019]; root of context hierarchy
+16:20:32.169 [main] DEBUG o.s.c.a.AnnotationConfigApplicationContext - Bean factory for org.springframework.context.annotation.AnnotationConfigApplicationContext@4233e892: org.springframework.beans.factory.support.DefaultListableBeanFactory@77d2e85: defining beans [org.springframework.context.annotation.internalConfigurationAnnotationProcessor,org.springframework.context.annotation.internalAutowiredAnnotationProcessor,org.springframework.context.annotation.internalRequiredAnnotationProcessor,org.springframework.context.annotation.internalCommonAnnotationProcessor,myPhotoMetaDataReaderImplTest]; root of factory hierarchy
+16:20:32.170 [main] DEBUG o.s.b.f.s.DefaultListableBeanFactory - Creating shared instance of singleton bean &apos;org.springframework.context.annotation.internalConfigurationAnnotationProcessor&apos;
+16:20:32.170 [main] DEBUG o.s.b.f.s.DefaultListableBeanFactory - Creating instance of bean &apos;org.springframework.context.annotation.internalConfigurationAnnotationProcessor&apos;
+16:20:32.170 [main] DEBUG o.s.b.f.s.DefaultListableBeanFactory - Eagerly caching bean &apos;org.springframework.context.annotation.internalConfigurationAnnotationProcessor&apos; to allow for resolving potential circular references
+16:20:32.171 [main] DEBUG o.s.b.f.s.DefaultListableBeanFactory - Finished creating instance of bean &apos;org.springframework.context.annotation.internalConfigurationAnnotationProcessor&apos;
+16:20:32.171 [main] DEBUG o.s.c.a.ConfigurationClassBeanDefinitionReader - Registering bean definition for @Bean method blackco.photos.spring.MyPhotoMetaDataReaderImplTest.myPhotoMetaDataReader()
+16:20:32.171 [main] DEBUG o.s.c.a.ConfigurationClassBeanDefinitionReader - Registering bean definition for @Bean method blackco.photos.spring.MyPhotoMetaDataReaderImplTest.myPhotoFinder()
+16:20:32.172 [main] DEBUG o.s.b.f.s.DefaultListableBeanFactory - Creating shared instance of singleton bean &apos;org.springframework.context.annotation.internalAutowiredAnnotationProcessor&apos;
+16:20:32.172 [main] DEBUG o.s.b.f.s.DefaultListableBeanFactory - Creating instance of bean &apos;org.springframework.context.annotation.internalAutowiredAnnotationProcessor&apos;
+16:20:32.172 [main] DEBUG o.s.b.f.s.DefaultListableBeanFactory - Eagerly caching bean &apos;org.springframework.context.annotation.internalAutowiredAnnotationProcessor&apos; to allow for resolving potential circular references
+16:20:32.172 [main] DEBUG o.s.b.f.s.DefaultListableBeanFactory - Finished creating instance of bean &apos;org.springframework.context.annotation.internalAutowiredAnnotationProcessor&apos;
+16:20:32.172 [main] DEBUG o.s.b.f.s.DefaultListableBeanFactory - Creating shared instance of singleton bean &apos;org.springframework.context.annotation.internalRequiredAnnotationProcessor&apos;
+16:20:32.172 [main] DEBUG o.s.b.f.s.DefaultListableBeanFactory - Creating instance of bean &apos;org.springframework.context.annotation.internalRequiredAnnotationProcessor&apos;
+16:20:32.172 [main] DEBUG o.s.b.f.s.DefaultListableBeanFactory - Eagerly caching bean &apos;org.springframework.context.annotation.internalRequiredAnnotationProcessor&apos; to allow for resolving potential circular references
+16:20:32.173 [main] DEBUG o.s.b.f.s.DefaultListableBeanFactory - Finished creating instance of bean &apos;org.springframework.context.annotation.internalRequiredAnnotationProcessor&apos;
+16:20:32.173 [main] DEBUG o.s.b.f.s.DefaultListableBeanFactory - Creating shared instance of singleton bean &apos;org.springframework.context.annotation.internalCommonAnnotationProcessor&apos;
+16:20:32.173 [main] DEBUG o.s.b.f.s.DefaultListableBeanFactory - Creating instance of bean &apos;org.springframework.context.annotation.internalCommonAnnotationProcessor&apos;
+16:20:32.173 [main] DEBUG o.s.b.f.s.DefaultListableBeanFactory - Eagerly caching bean &apos;org.springframework.context.annotation.internalCommonAnnotationProcessor&apos; to allow for resolving potential circular references
+16:20:32.173 [main] DEBUG o.s.b.f.s.DefaultListableBeanFactory - Finished creating instance of bean &apos;org.springframework.context.annotation.internalCommonAnnotationProcessor&apos;
+16:20:32.173 [main] DEBUG o.s.b.f.s.DefaultListableBeanFactory - Creating shared instance of singleton bean &apos;org.springframework.context.annotation.ConfigurationClassPostProcessor.importAwareProcessor&apos;
+16:20:32.173 [main] DEBUG o.s.b.f.s.DefaultListableBeanFactory - Creating instance of bean &apos;org.springframework.context.annotation.ConfigurationClassPostProcessor.importAwareProcessor&apos;
+16:20:32.173 [main] DEBUG o.s.b.f.s.DefaultListableBeanFactory - Eagerly caching bean &apos;org.springframework.context.annotation.ConfigurationClassPostProcessor.importAwareProcessor&apos; to allow for resolving potential circular references
+16:20:32.173 [main] DEBUG o.s.b.f.s.DefaultListableBeanFactory - Finished creating instance of bean &apos;org.springframework.context.annotation.ConfigurationClassPostProcessor.importAwareProcessor&apos;
+16:20:32.173 [main] DEBUG o.s.b.f.s.DefaultListableBeanFactory - Creating shared instance of singleton bean &apos;org.springframework.context.annotation.ConfigurationClassPostProcessor.enhancedConfigurationProcessor&apos;
+16:20:32.173 [main] DEBUG o.s.b.f.s.DefaultListableBeanFactory - Creating instance of bean &apos;org.springframework.context.annotation.ConfigurationClassPostProcessor.enhancedConfigurationProcessor&apos;
+16:20:32.173 [main] DEBUG o.s.b.f.s.DefaultListableBeanFactory - Eagerly caching bean &apos;org.springframework.context.annotation.ConfigurationClassPostProcessor.enhancedConfigurationProcessor&apos; to allow for resolving potential circular references
+16:20:32.173 [main] DEBUG o.s.b.f.s.DefaultListableBeanFactory - Finished creating instance of bean &apos;org.springframework.context.annotation.ConfigurationClassPostProcessor.enhancedConfigurationProcessor&apos;
+16:20:32.174 [main] DEBUG o.s.c.a.AnnotationConfigApplicationContext - Unable to locate MessageSource with name &apos;messageSource&apos;: using default [org.springframework.context.support.DelegatingMessageSource@1a9c38eb]
+16:20:32.174 [main] DEBUG o.s.c.a.AnnotationConfigApplicationContext - Unable to locate ApplicationEventMulticaster with name &apos;applicationEventMulticaster&apos;: using default [org.springframework.context.event.SimpleApplicationEventMulticaster@319bc845]
+16:20:32.174 [main] DEBUG o.s.b.f.s.DefaultListableBeanFactory - Pre-instantiating singletons in org.springframework.beans.factory.support.DefaultListableBeanFactory@77d2e85: defining beans [org.springframework.context.annotation.internalConfigurationAnnotationProcessor,org.springframework.context.annotation.internalAutowiredAnnotationProcessor,org.springframework.context.annotation.internalRequiredAnnotationProcessor,org.springframework.context.annotation.internalCommonAnnotationProcessor,myPhotoMetaDataReaderImplTest,org.springframework.context.annotation.ConfigurationClassPostProcessor.importAwareProcessor,org.springframework.context.annotation.ConfigurationClassPostProcessor.enhancedConfigurationProcessor,myPhotoMetaDataReader,myPhotoFinder]; root of factory hierarchy
+16:20:32.174 [main] DEBUG o.s.b.f.s.DefaultListableBeanFactory - Returning cached instance of singleton bean &apos;org.springframework.context.annotation.internalConfigurationAnnotationProcessor&apos;
+16:20:32.174 [main] DEBUG o.s.b.f.s.DefaultListableBeanFactory - Returning cached instance of singleton bean &apos;org.springframework.context.annotation.internalAutowiredAnnotationProcessor&apos;
+16:20:32.174 [main] DEBUG o.s.b.f.s.DefaultListableBeanFactory - Returning cached instance of singleton bean &apos;org.springframework.context.annotation.internalRequiredAnnotationProcessor&apos;
+16:20:32.174 [main] DEBUG o.s.b.f.s.DefaultListableBeanFactory - Returning cached instance of singleton bean &apos;org.springframework.context.annotation.internalCommonAnnotationProcessor&apos;
+16:20:32.174 [main] DEBUG o.s.b.f.s.DefaultListableBeanFactory - Creating shared instance of singleton bean &apos;myPhotoMetaDataReaderImplTest&apos;
+16:20:32.174 [main] DEBUG o.s.b.f.s.DefaultListableBeanFactory - Creating instance of bean &apos;myPhotoMetaDataReaderImplTest&apos;
+16:20:32.174 [main] DEBUG o.s.b.f.s.DefaultListableBeanFactory - Eagerly caching bean &apos;myPhotoMetaDataReaderImplTest&apos; to allow for resolving potential circular references
+16:20:32.174 [main] DEBUG o.s.b.f.s.DefaultListableBeanFactory - Finished creating instance of bean &apos;myPhotoMetaDataReaderImplTest&apos;
+16:20:32.174 [main] DEBUG o.s.b.f.s.DefaultListableBeanFactory - Returning cached instance of singleton bean &apos;org.springframework.context.annotation.ConfigurationClassPostProcessor.importAwareProcessor&apos;
+16:20:32.174 [main] DEBUG o.s.b.f.s.DefaultListableBeanFactory - Returning cached instance of singleton bean &apos;org.springframework.context.annotation.ConfigurationClassPostProcessor.enhancedConfigurationProcessor&apos;
+16:20:32.175 [main] DEBUG o.s.b.f.s.DefaultListableBeanFactory - Creating shared instance of singleton bean &apos;myPhotoMetaDataReader&apos;
+16:20:32.175 [main] DEBUG o.s.b.f.s.DefaultListableBeanFactory - Creating instance of bean &apos;myPhotoMetaDataReader&apos;
+16:20:32.175 [main] DEBUG o.s.b.f.s.DefaultListableBeanFactory - Returning cached instance of singleton bean &apos;myPhotoMetaDataReaderImplTest&apos;
+16:20:32.175 [main] DEBUG o.s.b.f.s.DefaultListableBeanFactory - Eagerly caching bean &apos;myPhotoMetaDataReader&apos; to allow for resolving potential circular references
+16:20:32.175 [main] DEBUG o.s.b.f.s.DefaultListableBeanFactory - Finished creating instance of bean &apos;myPhotoMetaDataReader&apos;
+16:20:32.175 [main] DEBUG o.s.b.f.s.DefaultListableBeanFactory - Creating shared instance of singleton bean &apos;myPhotoFinder&apos;
+16:20:32.175 [main] DEBUG o.s.b.f.s.DefaultListableBeanFactory - Creating instance of bean &apos;myPhotoFinder&apos;
+16:20:32.175 [main] DEBUG o.s.b.f.s.DefaultListableBeanFactory - Returning cached instance of singleton bean &apos;myPhotoMetaDataReaderImplTest&apos;
+16:20:32.175 [main] DEBUG o.s.b.f.s.DefaultListableBeanFactory - Eagerly caching bean &apos;myPhotoFinder&apos; to allow for resolving potential circular references
+16:20:32.175 [main] DEBUG o.s.b.f.s.DefaultListableBeanFactory - Finished creating instance of bean &apos;myPhotoFinder&apos;
+16:20:32.175 [main] DEBUG o.s.c.a.AnnotationConfigApplicationContext - Unable to locate LifecycleProcessor with name &apos;lifecycleProcessor&apos;: using default [org.springframework.context.support.DefaultLifecycleProcessor@4c5474f5]
+16:20:32.175 [main] DEBUG o.s.b.f.s.DefaultListableBeanFactory - Returning cached instance of singleton bean &apos;lifecycleProcessor&apos;
+16:20:32.175 [main] DEBUG o.s.c.e.PropertySourcesPropertyResolver - Searching for key &apos;spring.liveBeansView.mbeanDomain&apos; in [systemProperties]
+16:20:32.176 [main] DEBUG o.s.c.e.PropertySourcesPropertyResolver - Searching for key &apos;spring.liveBeansView.mbeanDomain&apos; in [systemEnvironment]
+16:20:32.176 [main] DEBUG o.s.c.e.PropertySourcesPropertyResolver - Could not find key &apos;spring.liveBeansView.mbeanDomain&apos; in any property source. Returning [null]
+16:20:32.177 [main] DEBUG o.s.b.f.s.DefaultListableBeanFactory - Returning cached instance of singleton bean &apos;myPhotoMetaDataReader&apos;
+16:20:32.184 [main] INFO  b.p.spring.MyPhotoMetaDataReaderImpl - Suggested: myTag.name = File Modified Date,value=Sat Jan 12 17:17:10 GMT 2019
+16:20:32.185 [main] INFO  b.p.spring.MyPhotoMetaDataReaderImpl - Suggested: myTag.name = Profile Date/Time,value=Mon Mar 09 06:49:00 GMT 1998
+</system-out>
+  </testcase>
+  <testcase classname="blackco.photos.spring.MyPhotoMetaDataReaderImplTest" name="testGetSuggestedCamera" time="0.011"/>
 </testsuite>
