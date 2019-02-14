@@ -1,5 +1,6 @@
 package blackco.photos.spring;
 
+import blackco.photos.PhotoSetAddPhoto;
 import org.apache.log4j.Logger;
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
@@ -17,6 +18,8 @@ public class DownloadServiceImpl implements DownloadService {
 
     private FlickrAuth auth;
 
+    private PhotosService photos;
+
     private static final Logger logger = Logger.getLogger(DownloadServiceImpl.class);
 
 
@@ -25,17 +28,23 @@ public class DownloadServiceImpl implements DownloadService {
         this.auth = auth;
     }
 
+
+    @Autowired
+    public void setPhotos(PhotosService photos) {
+        this.photos = photos;
+    }
+
     public void download(String path, PageSummary s){
 
         for (FlickrPhoto onFlickrPhoto : s.photos) {
 
-            getSizes( path, onFlickrPhoto.id, onFlickrPhoto.title);
+            getSizes( path, onFlickrPhoto);
 
         }
 
     }
 
-    private void getSizes(String path, String id, String title)  {
+    private void getSizes(String path, FlickrPhoto flickrPhoto){
 
 
         OAuthRequest request = new OAuthRequest(Verb.GET,
@@ -43,7 +52,7 @@ public class DownloadServiceImpl implements DownloadService {
         request.addQuerystringParameter("method", "flickr.photos.getSizes");
 
         request.addQuerystringParameter("api_key", auth.getApiKey());
-        request.addQuerystringParameter("photo_id", id);
+        request.addQuerystringParameter("photo_id", flickrPhoto.id);
         request.addQuerystringParameter("format", "json");
         request.addQuerystringParameter("nojsoncallback", "1");
 
@@ -69,29 +78,29 @@ public class DownloadServiceImpl implements DownloadService {
 
             if (  obj.getString("label").equals("Video Player")  ) {
 
-                if ( saveVideo(path,obj.getString("source"), title + "_vp")) {
-                    logger.info("Cannot persist = " + title);
+                if ( saveVideo(path,obj.getString("source"), flickrPhoto.title + "_vp")) {
+                    logger.info("Cannot persist = " + flickrPhoto.title);
                 }
             }
 
             if ( obj.getString("label").equals("Video Original")   ) {
 
-                if ( saveVideo(path,obj.getString("source"), title +"_vo")) {
-                    logger.info("Cannot persist = " + title);
+                if ( saveVideo(path,obj.getString("source"), flickrPhoto.title +"_vo")) {
+                    logger.info("Cannot persist = " + flickrPhoto.title);
                 }
             }
 
             if (  obj.getString("label").equals("Site MP4")  ) {
 
-                if ( ! saveVideo(path,obj.getString("source"), title + "_s")) {
-                    logger.info("Cannot persist = " + title);
+                if ( ! saveVideo(path,obj.getString("source"), flickrPhoto.title + "_s")) {
+                    logger.info("Cannot persist = " + flickrPhoto.title);
                 }
             }
 
             if (  obj.getString("label").equals("Mobile MP4")   ) {
 
-                if ( saveVideo(path,obj.getString("source"), title + "_m")) {
-                    logger.info("Cannot persist = " + title);
+                if ( saveVideo(path,obj.getString("source"), flickrPhoto.title + "_m")) {
+                    logger.info("Cannot persist = " + flickrPhoto.title);
                 }
             }
 
@@ -100,10 +109,12 @@ public class DownloadServiceImpl implements DownloadService {
                 boolean savedImage = false;
                 int errorCount = 0;
 
+
+                flickrPhoto.setDownloadUrl( obj.getString("source"));
                 while ( !savedImage && errorCount < 4) {
-                    savedImage = saveImage(path, id, obj.getString("source"), title);
+                    savedImage = saveImage(path, flickrPhoto);
                     if ( !savedImage){
-                        logger.info("Cannot persist title=" + title + ", number of tries= " + errorCount);
+                        logger.info("Cannot persist title=" + flickrPhoto.title + ", number of tries= " + errorCount);
                         errorCount ++;
                     } else {
                         //downloadedPhoto(id);
@@ -111,6 +122,8 @@ public class DownloadServiceImpl implements DownloadService {
 
                 }
             }
+
+            this.photos.setPhoto(flickrPhoto);
 
 
         }
@@ -160,21 +173,19 @@ public class DownloadServiceImpl implements DownloadService {
 
 
 
-    private  boolean saveImage(String path, String id, String imageUrl, String title)  {
-
-        //updatePhoto(id,imageUrl, title);
+    private  boolean saveImage(String path, FlickrPhoto photo ){
 
         try {
-            URL url = new URL(imageUrl);
+            URL url = new URL(photo.downloadUrl);
             String fileName = url.getFile();
-            logger.info("imageUrl = " + imageUrl);
+            logger.info("imageUrl = " + photo.getDownloadUrl());
 
             String destName = null;
 
-            if ( title.isEmpty() ) {
+            if ( photo.getOriginalFileName().isEmpty() ) {
                 destName = path + "/" + fileName.substring(fileName.lastIndexOf("/"));
             } else {
-                destName = path + "/" + title + fileName.substring(fileName.lastIndexOf("."));
+                destName = path + "/" + photo.getOriginalFileName() + fileName.substring(fileName.lastIndexOf("."));
             }
             System.out.println(destName);
 
@@ -193,7 +204,7 @@ public class DownloadServiceImpl implements DownloadService {
             return true;
 
         } catch (Exception e){
-            logger.info("Cannot persist title=" + title  );
+            logger.info("Cannot persist title=" + photo.getOriginalFileName()  );
             //logger.error(e);
             return false;
 

@@ -115,11 +115,7 @@ public class ComplexComparisonTest {
 				return summary;
 			}
 
-			@Override
-			public void download(String path, PageSummary s) {
-				// TODO Auto-generated method stub
-				
-			}
+
 		};
 	}
 

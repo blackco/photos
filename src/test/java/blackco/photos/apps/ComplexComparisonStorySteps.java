@@ -119,11 +119,7 @@ public class ComplexComparisonStorySteps {
 				return summary;
 			}
 
-			@Override
-			public void download(PageSummary s) {
-				// TODO Auto-generated method stub
-				
-			}
+
 		};
 	}
 
