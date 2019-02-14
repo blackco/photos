@@ -54,13 +54,17 @@ public class AppConfig {
 	    public PhotoFinder myPhotoFinder(){
 	    	return new PhotoFinderImpl();
 	    }
-	 
+
+	    @Bean
+		public DownloadService myDownloadService() { return new DownloadServiceImpl(); };
+
 	    private FlickrAuth flickrAuth;
 	    
 	    private MyPhotos myPhotos;
 	    
 	    private PhotosService photoService;
-	 
+
+
 	    @Autowired
 	    public void setFlickrAuth(FlickrAuth flickrAuth){
 	    	this.flickrAuth = flickrAuth;
@@ -75,7 +79,9 @@ public class AppConfig {
 	    public void setPhotosService(PhotosService service){
 	    	this.photoService = service;
 	    }
-	    
+
+
+
 	   public void init(String[] args){
 		   
 	    	String requestKey = null;
