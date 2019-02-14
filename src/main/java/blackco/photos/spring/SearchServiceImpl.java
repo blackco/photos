@@ -22,8 +22,11 @@ import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
 import org.scribe.model.Verb;
 import org.springframework.beans.factory.annotation.Autowired;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
 
-import blackco.photos.apps.DownloadFiles;
 
 
 public class SearchServiceImpl implements SearchService {
@@ -32,6 +35,7 @@ public class SearchServiceImpl implements SearchService {
 	
 	private FlickrAuth auth;
 	private Photos photos;
+	private Connection conn  =null;
 
 	@Autowired
 	public void setFlickrAuth(FlickrAuth auth) {
@@ -58,7 +62,9 @@ public class SearchServiceImpl implements SearchService {
 		request.addQuerystringParameter("format", "json");
 		request.addQuerystringParameter("nojsoncallback", "1");
 		request.addQuerystringParameter("content_type", "1");
+		//request.addQuerystringParameter("media","video");
 
+		logger.info("Flickr Search request="+ request.getCompleteUrl());
 		System.out.println("Search.search():"
 				+ "min_taken_date:"+criteria.min_taken_date
 				+ "max_taken_date:"+criteria.max_taken_date);
@@ -117,108 +123,5 @@ public class SearchServiceImpl implements SearchService {
 	}
 
 
-	public void download(String path, PageSummary s){
-		
-		for (FlickrPhoto onFlickrPhoto : s.photos) {
-			
-			getSizes( path, onFlickrPhoto.id, onFlickrPhoto.title);
-
-		}
-		
-	}
-	
-	private void getSizes(String path, String id, String title)  {
-		
-
-		OAuthRequest request = new OAuthRequest(Verb.GET,
-				"https://api.flickr.com/services/rest/");
-		request.addQuerystringParameter("method", "flickr.photos.getSizes");
-
-		request.addQuerystringParameter("api_key", auth.getApiKey());
-		request.addQuerystringParameter("photo_id", id);
-		request.addQuerystringParameter("format", "json");
-		request.addQuerystringParameter("nojsoncallback", "1");
-
-		Response response = auth.get(request);
-
-		StringReader reader = new StringReader(response.getBody());
-
-		JsonReader jsonReader = Json.createReader(reader);
-		
-		JsonObject jobj = jsonReader.readObject();
-
-		
-		JsonObject object = (JsonObject) jobj.get("sizes");
-		JsonArray array = (JsonArray) object.get("size");
-
-
-		for (JsonValue val : array) {
-			
-			JsonObject obj = (JsonObject) val;
-		
-
-				
-				if ( obj.getString("label").equals("Original")){
-
-					boolean savedImage = false;
-					int errorCount = 0;
-
-					while ( !savedImage && errorCount < 4) {
-						savedImage = saveImage(path, obj.getString("source"), title);
-						if ( !savedImage){
-							logger.info("Cannot persist title=" + title + ", number of tries= " + errorCount);
-							errorCount ++;
-						}
-
-					}
-				}
-
-			}
-		
-		}
-
-		
-		
-
-		
-
-
-	private  boolean saveImage(String path, String imageUrl, String title)  {
-
-			try {
-				URL url = new URL(imageUrl);
-				String fileName = url.getFile();
-				logger.info("imageUrl = " + imageUrl);
-
-				String destName = null;
-
-				if ( title.isEmpty() ) {
-					destName = path + "/" + fileName.substring(fileName.lastIndexOf("/"));
-				} else {
-					destName = path + "/" + title + fileName.substring(fileName.lastIndexOf("."));
-				}
-					System.out.println(destName);
-
-				InputStream is = url.openStream();
-				OutputStream os = new FileOutputStream(destName);
-
-				byte[] b = new byte[2048];
-				int length;
-
-				while ((length = is.read(b)) != -1) {
-					os.write(b, 0, length);
-				}
-
-				is.close();
-				os.close();
-				return true;
-
-			} catch (Exception e){
-				logger.info("Cannot persist title=" + title  );
-				//logger.error(e);
-				return false;
-
-			}
-	}
 
 }
