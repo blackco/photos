@@ -2,6 +2,7 @@ package blackco.photos.spring;
 
 import java.io.File;
 import java.io.IOException;
+import java.sql.*;
 import java.util.Collection;
 import java.util.HashMap;
 
@@ -18,12 +19,19 @@ public class PhotosServiceImpl implements PhotosService {
 		private HashMap<String, FlickrPhoto> photos = new HashMap<String,FlickrPhoto>();
 	
 		
-		private String cache = "/Users/blackco/Temp/photosServiceCache.json";
+		private String cache = "/Users/colinblack/Temp/photosServiceCache.json";
 
-		
-		public void setPhoto(FlickrPhoto photo){
-			photos.put(photo.id, photo);
-		}
+    private Connection conn  =null;
+
+	private CallableStatement cStmt = null;
+
+
+	public void setPhoto(FlickrPhoto photo){
+
+    	logger.info("caching photo = " + photo);
+        photos.put(photo.id, photo);
+        updatePhoto(photo);
+    }
 		
 		public FlickrPhoto getPhoto(String id){
 			return photos.get(id);
@@ -76,8 +84,6 @@ public class PhotosServiceImpl implements PhotosService {
 			
 		}
 
-
-		
 		public void save() {
 
 			ObjectMapper mapper = new ObjectMapper();
@@ -91,5 +97,74 @@ public class PhotosServiceImpl implements PhotosService {
 
 			logger.debug("save(): persisted to disk = " + cache);
 		}
+
+
+    private void getConnection(){
+
+
+        try {
+
+            Class.forName("com.mysql.jdbc.Driver");
+
+            conn =
+                    DriverManager.getConnection("jdbc:mysql://localhost", "photos", "elephants");
+
+            conn.setCatalog("flickr");
+
+            cStmt = conn.prepareCall("{call updatePhotos(?, ? , ? , ?, ? , ?)}");
+
+
+
+		} catch (Exception ex) {
+            // handle any errors
+            logger.error(ex);
+
+        }
+    }
+
+
+    /*
+
+    CREATE PROCEDURE updatePhotos(IN _flickrId VARCHAR(255), \
+                        IN _downloaded BOOLEAN, \
+                        IN _url VARCHAR(255), \
+                        IN _title VARCHAR(255), \
+                        IN _takenInUtc timestamp, \
+                        IN _camera VARCHAR(255))
+     */
+
+
+    private void updatePhoto(FlickrPhoto flickrPhoto){
+
+
+        try {
+            if (conn == null) {
+                getConnection();
+            }
+
+
+
+			cStmt.setString(1 , flickrPhoto.getId());
+			cStmt.setBoolean(2, false);
+			cStmt.setString( 3, flickrPhoto.getDownloadUrl());
+            cStmt.setString( 4, flickrPhoto.getTitle());
+            if ( flickrPhoto.getDateTaken() != null) {
+				cStmt.setTimestamp(5, new Timestamp(flickrPhoto.getDateTaken().getTime()));
+			} else {
+				cStmt.setTimestamp(5, null);
+			}
+
+			cStmt.setString(6, flickrPhoto.getCamera());
+
+			logger.info("callableStatement cStmt after set =  " + cStmt);
+
+			cStmt.execute();
+
+        } catch ( Exception e){
+
+            logger.error(e);
+        }
+    }
+
 
 }
