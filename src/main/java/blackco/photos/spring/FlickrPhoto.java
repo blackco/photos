@@ -144,6 +144,9 @@ public class FlickrPhoto {
 			this.originalDateTaken = originalDateTaken;
 		}
 
+		public String getDownloadUrl(){ return downloadUrl;}
+
+		public void setDownloadUrl(String _downloadUrl){ this.downloadUrl = _downloadUrl;}
 
 
 
@@ -159,6 +162,9 @@ public class FlickrPhoto {
 		public Date dateTaken;
 		public String originalFileName;
 		public Date originalDateTaken;
+		public boolean downloaded;
+		public String downloadUrl;
+
 		
 		
 		public String toString(){
